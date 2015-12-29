@@ -1,20 +1,17 @@
-function [x,t] = note(f,vurus) %fonksiyonu tanimliyoruz.girilicek argumanlari tanýmladýk
-fs=8192;%örnekleme frekansý
-t = 0:1/fs:vurus; %0 dan dur a kadar 1/(100*ff) kadar artýyor
-%xx,tt]=note(1,3);
-%plot(tt,xx)
-%grafigi cizdirmek icin ustteki kodu command window'a yazariz
-
-    elemanS = length(tt); %% Eleman sayýsý
-    
-    attack = linspace(0,1.5,(elemanS*2/8));
-    
-    decay = linspace(1.5-(0.5/(elemanS/8)),1,(elemanS/8));
-    
-    sustain = ones(1,(elemanS/2));
-    
-    relase = linspace(1-(1/(elemanS/8)),0,(elemanS/8));
-    
-    zarf = [attack, decay, sustain, relase];
-
-    x = zarf .* sin(2*pi*f*t + zarf); %% zarflý sinüs döndürüldü.
+function[x,t]=note(frekans,vurus)%sinyali çiziyor
+    fs=8192;%orneklenme tanimlandi
+    t=0:1/fs:vurus-(1/fs); %periyodu tanimladik
+       a=length(t);%periyodun uzunlugu
+    hk=[1 0.8 0.4 0.1]; %harmonik katsayilari atama
+        b=length(hk); %hk dizisinin boyutu b ye atandi
+        x=zeros(1,a); %periyot boyutu kadar 0 degerinden olusan bir x matrisi tanimlandi
+        for i=1:b %1 den  dizi boyutuna kadar bir dongu olusturuldu
+            x=x+(hk(i)*sin(2*pi*(i*frekans)*t)); %disardaki alinan degerlere gore olusturulan sinus sinyalinin harmonigi olusturuldu
+        end
+A=linspace(0,1.5,a/4);%genligi 1,5'a kadar olan ve periyodun 1/4'u kadar aralýkta vektor olusturur
+B=linspace(1.5,1,a/8);%genligi 1,5 dan 1'e kadar inen ve periyodun 1/8'i kadar aralýkta vektor olusturur
+C=linspace(1,1,a/2);%genligi sabitolan ve periyodun 1/2'si kadar aralýkta vektor olusturur
+D=linspace(1,0,a/8);%genligi 1 den 0'e kadar inen ve periyodun 1/8'i kadar aralikta vektor olusturur
+ zarf=[A B C D];%vektorler bir dizide  siralanir
+ x=x.*zarf;%x dizisinin her elemani zarf dizisinin her elemani tek tek carpilara tekrar x dizisine atanýr yani x sinyali zarflanir.
+ 

@@ -9,3 +9,7 @@ note.png : notalar
 notalar.txt : notalarýn süre ve vuruþlarý
 pdfteki oktav tablosunda bir notanýn oktavlarý arasýnda iki kat oran vardýr.
 oktavlar eklendi
+//Update
+sentez.m:echo ekleyip, normalize ettik
+notalar.txt:noktalama iþaretlerini kaldýrdýk
+frek.m:frekans alýnýyor
