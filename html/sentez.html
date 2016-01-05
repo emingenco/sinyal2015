@@ -1,0 +1,138 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>sentez</title><meta name="generator" content="MATLAB 8.5"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-01-05"><meta name="DC.source" content="sentez.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">[nota,b,c]=textread(<span class="string">'Notalar.txt'</span>,<span class="string">'%s %s %s'</span>); <span class="comment">%Notalar.txt dosyasi okunarak sutunlar bir degere atandi</span>
+fs=8192;<span class="comment">%ornekleme degiskene atandi</span>
+ds=round(fs/100); <span class="comment">%durma suresi</span>
+go=round(fs/10); <span class="comment">%gecikme suresi</span>
+notalar=zeros(1,fs); <span class="comment">%ornekleme suresi kadar 0 dan olusan bir dizi olusturuldu</span>
+a=zeros(1,length(notalar)); <span class="comment">%notalar matrisi boyutlarinda 0 dan olusan bir dizi olusturuldu</span>
+durak=zeros(1,ds); <span class="comment">%durma suresi boyutunda 0 dan olusan bir dizi olusturuldu</span>
+oktav=str2num(cell2mat(b)); <span class="comment">%dosyadan cell olarak okunan degiskenler double degere donderildi</span>
+</pre><pre class="codeinput">   <span class="keyword">for</span> i=1:(length(nota)) <span class="comment">%nota dizisi boyu kadar dongu olusturuldu</span>
+       vurus((i),1)=str2num(cell2mat(c(i,1))); <span class="comment">%dosyadan cell olarak okunan degiskenler double degere donusturuldu</span>
+       frekans((i),1)=frek(nota((i),1),oktav((i),1)); <span class="comment">%daha onceden olusturulmus frek fonsiyonu donusturuldu</span>
+       [x,t]=note(frekans((i),1),vurus((i),1)); <span class="comment">%daha onceden olusturulmus note fonksiyonu donusturuldu</span>
+       notalar=[notalar durak x]; <span class="comment">%note fonsiyonunun dondurdurulen sinyal degeri aralarina daha once olusturulmus durak dizisi de yerle&iuml;&iquest;&frac12;tirilerek birle&iuml;&iquest;&frac12;tirildi</span>
+   <span class="keyword">end</span> <span class="comment">%for dongusu</span>
+   plot(notalar)
+</pre><img vspace="5" hspace="5" src="sentez_01.png" alt=""> <pre class="codeinput"> notalarecho=zeros(1,(length(notalar))); <span class="comment">%notalar matrisi boyutlarinda 0 dan olusan bir dizi olusturuldu</span>
+ <span class="keyword">for</span> i=1:(length(notalar)) <span class="comment">%notalar dizisi boyu kadar dongu olusturuldu</span>
+     f=(go+i); <span class="comment">%echo olusturmak icin gerekli olan gecikme suresi donguye sokuldu</span>
+     <span class="keyword">if</span> f&lt;(length(notalar)) <span class="comment">%gecikme suresi notalar matrisinin boyutunu gecmesin diye sartlandi</span>
+     notalarecho(i)=notalar(i)*0.3+notalar(f); <span class="comment">%notalar matrisinin herbir degerinin %30'u alinip gecikme suresi kadar kayd&iuml;&iquest;&frac12;r&iuml;&iquest;&frac12;lm&iuml;&iquest;&frac12;&iuml;&iquest;&frac12;t&iuml;&iquest;&frac12;r</span>
+     <span class="keyword">else</span>
+      notalarecho(i)=notalar(i)*0.3+0;
+     <span class="keyword">end</span>
+ <span class="keyword">end</span>
+ plot(notalarecho)
+</pre><img vspace="5" hspace="5" src="sentez_02.png" alt=""> <pre class="codeinput">  normalizenotalarecho=zeros(1,(length(notalar)));<span class="comment">%normalizasyon islemi yapilmasi icin degisken tanimi</span>
+  normalizenotalarecho=notalarecho/max(abs(notalarecho));<span class="comment">%sinyalin tepe degerleri 1'e normalize ediliyor</span>
+  plot(normalizenotalarecho)
+sound(normalizenotalarecho) <span class="comment">%sinyal caldiriliyor.</span>
+</pre><pre class="codeoutput">Warning: Unable to play audio because no audio outputs were found. 
+Warning: Unable to play audio because no audio outputs were found. 
+</pre><img vspace="5" hspace="5" src="sentez_03.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2015a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+[nota,b,c]=textread('Notalar.txt','%s %s %s'); %Notalar.txt dosyasi okunarak sutunlar bir degere atandi
+fs=8192;%ornekleme degiskene atandi
+ds=round(fs/100); %durma suresi 
+go=round(fs/10); %gecikme suresi 
+notalar=zeros(1,fs); %ornekleme suresi kadar 0 dan olusan bir dizi olusturuldu
+a=zeros(1,length(notalar)); %notalar matrisi boyutlarinda 0 dan olusan bir dizi olusturuldu
+durak=zeros(1,ds); %durma suresi boyutunda 0 dan olusan bir dizi olusturuldu
+oktav=str2num(cell2mat(b)); %dosyadan cell olarak okunan degiskenler double degere donderildi
+%%
+   for i=1:(length(nota)) %nota dizisi boyu kadar dongu olusturuldu
+       vurus((i),1)=str2num(cell2mat(c(i,1))); %dosyadan cell olarak okunan degiskenler double degere donusturuldu
+       frekans((i),1)=frek(nota((i),1),oktav((i),1)); %daha onceden olusturulmus frek fonsiyonu donusturuldu
+       [x,t]=note(frekans((i),1),vurus((i),1)); %daha onceden olusturulmus note fonksiyonu donusturuldu
+       notalar=[notalar durak x]; %note fonsiyonunun dondurdurulen sinyal degeri aralarina daha once olusturulmus durak dizisi de yerleï¿½tirilerek birleï¿½tirildi
+   end %for dongusu
+   plot(notalar)
+   %%
+ notalarecho=zeros(1,(length(notalar))); %notalar matrisi boyutlarinda 0 dan olusan bir dizi olusturuldu
+ for i=1:(length(notalar)) %notalar dizisi boyu kadar dongu olusturuldu
+     f=(go+i); %echo olusturmak icin gerekli olan gecikme suresi donguye sokuldu
+     if f<(length(notalar)) %gecikme suresi notalar matrisinin boyutunu gecmesin diye sartlandi
+     notalarecho(i)=notalar(i)*0.3+notalar(f); %notalar matrisinin herbir degerinin %30'u alinip gecikme suresi kadar kaydï¿½rï¿½lmï¿½ï¿½tï¿½r
+     else 
+      notalarecho(i)=notalar(i)*0.3+0; 
+     end
+ end 
+ plot(notalarecho)
+ %%
+  normalizenotalarecho=zeros(1,(length(notalar)));%normalizasyon islemi yapilmasi icin degisken tanimi
+  normalizenotalarecho=notalarecho/max(abs(notalarecho));%sinyalin tepe degerleri 1'e normalize ediliyor
+  plot(normalizenotalarecho)
+sound(normalizenotalarecho) %sinyal caldiriliyor.
+
+    
+##### SOURCE END #####
+--></body></html>
